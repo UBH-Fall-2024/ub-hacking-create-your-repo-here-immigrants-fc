@@ -22,6 +22,7 @@ Instructions:
 7. The tasks must be broken up in the most efficient way possible, Allowing the user to leverage deep work and the flow state to finish the tasks at the best of their ability.
 8. When providing the schedule, include the time to work on the task, the task itself. Do the same for breaks.
 9. Make sure to list some actvities the user can do during breaks that will allow them to rest, but also not lose focus.
+10. Understand that some tasks may not be finished within the required time, so you do not necessarily need to expect bigger tasks to be finished within the given time limit.
 
 Answer: Based on the list of tasks you provided, here is how you should structure your study session:
 """
