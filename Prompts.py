@@ -13,6 +13,10 @@ Context:
 User Question: {question}
 
 Instructions:
+1. I need you to return your response to me in a very specific format and ONLY ever in that format. The format you have to follow is:
+{"Timer Items":{"":{"":""}}, "":""} 
+
+
 1. Carefully analyze the timeframe, the provided context, and the user's tasks.
 2. Make sure to use the provided context for planning ONLY. Do not let it affect the tasks at all. 
 3. When creating a schedule, feel free to break up the tasks however you deem best, based on the provided context and ther perceived difficulty of the tasks.
