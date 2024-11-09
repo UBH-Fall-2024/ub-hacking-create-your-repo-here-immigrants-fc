@@ -3,7 +3,7 @@ from langchain.prompts import ChatPromptTemplate
 
 model = Ollama(model = "llama3.2")
 
-PROMPT_TEM = """
+PROMPT_TEM_SCHEDULE = """
 You are a personal Assistant for the user. You will be provided a list of tasks that need completing and a time frame, and your job is to
 create a schedule for the user that meets the time frame and completes all tasks in the most efficient way possible. You can ask for clarification, but I want you to use any previous knowledge
 you have on deep learning and the flow state, including concepts like the pomodoro technique and build the most efficient work flow you can.
@@ -28,7 +28,7 @@ Answer: Based on the list of tasks you provided, here is how you should structur
 """
 context_texts = ""
 quested_text = "I have an assignment to finish and I need to study for two tests. My assignment is a programming project, and I have to study for mty discrete math quiz and calc 2 midterm. I plan on spending 6 hours working on them today, how do I spread them out?"
-prompted = ChatPromptTemplate.from_template(PROMPT_TEM)
+prompted = ChatPromptTemplate.from_template(PROMPT_TEM_SCHEDULE)
 prompt = prompted.format(context = context_texts, question = quested_text)
 response = model.invoke(prompt)
 forms = f"{response}"
