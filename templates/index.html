@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Interface</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #ffe6cc 0%, #fff0e0 50%, #ffe6cc 100%);
+            min-height: 100vh;
+            color: #3a2a1a;
+            box-sizing: border-box;
+        }
+        * {
+            box-sizing: border-box;
+        }
+        .main-container {
+            max-width: 90%;
+            margin: 0 auto;
+            background: rgba(255, 245, 235, 0.8);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(139, 115, 85, 0.1);
+            min-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+        }
+        .content-wrapper {
+            display: flex;
+            gap: 30px;
+            width: 100%;
+            flex: 1;
+        }
+        .left-panel {
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 65%;
+            min-width: 0;
+        }
+        .message-container {
+            position: relative;
+            margin-bottom: 20px;
+            min-height: 160px;
+            max-height: 160px;
+        }
+        .right-panel {
+            flex: 1;
+            background: #fff5e6;
+            padding: 25px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 10px rgba(139, 115, 85, 0.1);
+            overflow: hidden;
+            height: calc(100vh - 140px);
+        }
+        .timer {
+            padding: 25px;
+            background: #fff5e6;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(139, 115, 85, 0.1);
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+        .timer.active {
+            border: 2px solid #c4966c;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(196, 150, 108, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(196, 150, 108, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(196, 150, 108, 0); }
+        }
+        .message-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120px;
+            padding: 20px;
+            padding-right: 180px; 
+            border: 2px solid #d4b08c;
+            border-radius: 15px;
+            font-size: 18px;
+            font-family: 'Times New Roman', Times, serif;
+            resize: none;
+            background: #fff5e6;
+            color: #3a2a1a;
+            font-weight: 600;
+            box-shadow: inset 0 2px 4px rgba(139, 115, 85, 0.1);
+            z-index: 1;
+        }
+        .message-input:focus {
+            outline: none;
+            border-color: #b38b6d;
+            box-shadow: 0 0 0 2px rgba(179, 139, 109, 0.2);
+        }
+        .send-button, .reset-button {
+            position: absolute;
+            padding: 12px 24px;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-family: 'Times New Roman', Times, serif;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+        .send-button {
+            bottom: 55px;
+            right: 15px;
+            background-color: #c4966c;
+        }
+        .reset-button {
+            bottom: 55px;
+            right: 100px;
+            background-color: #d4966c;
+        }
+        .send-button:hover, .reset-button:hover {
+            background-color: #b38b6d;
+            transform: translateY(-1px);
+        }
+        .tasks-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 10px;
+            margin-top: 10px;
+        }
+        .task {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #fff9f2;
+            margin: 8px 0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-size: 18px;
+            font-weight: 600;
+            border: 1px solid rgba(179, 139, 109, 0.2);
+        }
+        .task.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+            background: #f9f2ea;
+        }
+        .task.current {
+            border-left: 4px solid #c4966c;
+            background: #fff5e6;
+            box-shadow: 0 2px 8px rgba(196, 150, 108, 0.2);
+        }
+        .task-checkbox {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #8b7355;
+        }
+        .task-content {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .task-time {
+            font-size: 14px;
+            color: #8b7355;
+        }
+        .time {
+            font-size: 32px;
+            font-weight: bold;
+            color: #3a2a1a;
+        }
+        h3 {
+            color: #3a2a1a;
+            margin: 0 0 20px 0;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: left;
+            border-bottom: 2px solid rgba(179, 139, 109, 0.3);
+            padding-bottom: 10px;
+        }
+        
+        .tasks-container::-webkit-scrollbar {
+            width: 8px;
+        }
+        .tasks-container::-webkit-scrollbar-track {
+            background: #fff5e6;
+            border-radius: 4px;
+        }
+        .tasks-container::-webkit-scrollbar-thumb {
+            background: #d4b08c;
+            border-radius: 4px;
+        }
+        .tasks-container::-webkit-scrollbar-thumb:hover {
+            background: #b38b6d;
+        }
+        
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            .left-panel {
+                max-width: 100%;
+            }
+            .right-panel {
+                height: 500px;
+            }
+            .main-container {
+                padding: 15px;
+            }
+            .message-container {
+                min-height: 140px;
+                max-height: 140px;
+            }
+            .message-input {
+                height: 100px;
+            }
+            .send-button, .reset-button {
+                bottom: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="content-wrapper">
+            <div class="left-panel">
+                <div class="message-container">
+                    <textarea class="message-input" id="messageInput" placeholder="Enter message"></textarea>
+                    <button class="reset-button" onclick="resetAll()">Reset All</button>
+                    <button class="send-button" onclick="sendMessage()">Send</button>
+                </div>
+                
+                <div class="timer" id="timer1">
+                    <h3>Total Time Remaining</h3>
+                    <div class="time">00:00:00</div>
+                </div>
+                
+                <div class="timer" id="timer2">
+                    <h3>Current Task Time</h3>
+                    <div class="time">00:00:00</div>
+                </div>
+            </div>
+
+            <div class="right-panel">
+                <h3>Tasks</h3>
+                <div id="tasks" class="tasks-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+   
+
+let timerInterval;
+
+function startTimerPolling() {
+    console.log("Starting timer polling"); 
+    if (timerInterval) {
+        clearInterval(timerInterval);
+    }
+    
+    timerInterval = setInterval(async () => {
+        try {
+            const response = await fetch('/get-timers');
+            const data = await response.json();
+            
+            console.log("Timer update received:", data);  
+
+            document.querySelector('#timer1 .time').textContent = data.total_timer;
+            document.querySelector('#timer2 .time').textContent = data.task_timer;
+            
+            
+            const timer1 = document.querySelector('#timer1');
+            const timer2 = document.querySelector('#timer2');
+            
+            if (data.timer_running) {
+                timer1.classList.add('active');
+                timer2.classList.add('active');
+            } else {
+                timer1.classList.remove('active');
+                timer2.classList.remove('active');
+            }
+            
+
+            const tasks = document.querySelectorAll('.task');
+            tasks.forEach((task, index) => {
+  
+                task.classList.remove('current');
+                
+                if (index < data.current_task_index) {
+
+                    task.classList.add('completed');
+                    task.querySelector('input[type="checkbox"]').checked = true;
+                } else if (index === data.current_task_index && data.timer_running) {
+
+                    task.classList.add('current');
+                }
+            });
+            
+            if (!data.timer_running && data.total_timer === 0) {
+                clearInterval(timerInterval);
+            }
+        } catch (error) {
+            console.error('Error polling timers:', error);
+        }
+    }, 1000);
+}
+
+async function sendMessage() {
+    const messageInput = document.getElementById('messageInput');
+    const message = messageInput.value;
+    
+    if (!message.trim()) return;
+    
+    try {
+        messageInput.disabled = true;
+        
+        console.log("Sending message:", message); 
+        
+        const response = await fetch('/send-message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message }),
+        });
+        
+        const data = await response.json();
+        console.log("Response received:", data);
+        if (data.status === 'error') {
+            console.error('Server error:', data.message);
+            alert('Error processing message: ' + data.message);
+            return;
+        }
+        
+        if (data.tasks && data.tasks.length > 0) {
+            console.log("Updating tasks:", data.tasks);  
+            updateTasks(data.tasks);
+            
+
+            document.querySelector('#timer1 .time').textContent = data.total_timer;
+            document.querySelector('#timer2 .time').textContent = data.task_timer;
+            
+
+            if (data.timer_running) {
+                startTimerPolling();
+            }
+        }
+        
+        messageInput.value = '';
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error sending message: ' + error.message);
+    } finally {
+        messageInput.disabled = false;
+    }
+}
+
+function updateTasks(tasks) {
+    const tasksContainer = document.getElementById('tasks');
+    tasksContainer.innerHTML = tasks.map(task => `
+        <div class="task ${task.completed ? 'completed' : ''}" id="task-${task.id}">
+            <input 
+                type="checkbox" 
+                class="task-checkbox" 
+                ${task.completed ? 'checked' : ''}
+                onchange="toggleTask('${task.id}')"
+            >
+            <div class="task-content">
+                <span class="task-text">${task.text}</span>
+                <span class="task-time">${task.time}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+        async function toggleTask(taskId) {
+            try {
+                const response = await fetch('/toggle-task', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ taskId }),
+                });
+                const data = await response.json();
+                if (data.tasks) {
+                    updateTasks(data.tasks);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function resetAll() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+            
+            fetch('/reset', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const tasksContainer = document.getElementById('tasks');
+                tasksContainer.innerHTML = '';
+                
+                document.querySelector('#timer1 .time').textContent = '00:00:00';
+                document.querySelector('#timer2 .time').textContent = '00:00:00';
+                
+                document.getElementById('messageInput').value = '';
+                
+                const timer1 = document.querySelector('#timer1');
+                const timer2 = document.querySelector('#timer2');
+                timer1.classList.remove('active');
+                timer2.classList.remove('active');
+            })
+            .catch(error => console.error('Error resetting:', error));
+        }
+
+        document.getElementById('messageInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
